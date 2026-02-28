@@ -1,7 +1,3 @@
-<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">TohokuTrip</string>
-    <string name="title_activity_main">TohokuTrip</string>
-    <string name="package_name">com.jkhomeclaw.tohokutrip</string>
-    <string name="custom_url_scheme">com.jkhomeclaw.tohokutrip</string>
+    <string name="app_name">Costco班表V21</string>
 </resources>
