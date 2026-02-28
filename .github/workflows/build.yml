@@ -19,7 +19,6 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
-        cache: 'npm'
     
     - name: Setup JDK
       uses: actions/setup-java@v4
@@ -28,7 +27,7 @@ jobs:
         distribution: 'temurin'
     
     - name: Install dependencies
-      run: npm ci
+      run: npm install
     
     - name: Sync Capacitor
       run: npx cap sync android
