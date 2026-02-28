@@ -13,34 +13,25 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 18
-    
     - name: Setup JDK
       uses: actions/setup-java@v4
       with:
-        java-version: 17
-        distribution: temurin
+        java-version: '17'
+        distribution: 'temurin'
     
-    - name: Install Capacitor
-      run: npm install -g @capacitor/cli
-    
-    - name: Install dependencies
-      run: npm install
-    
-    - name: Create Android project
-      run: npx cap add android || true
-    
-    - name: Sync Capacitor
-      run: npx cap sync android
+    - name: Prepare Android project
+      run: |
+        # 確保 gradlew 可執行
+        chmod +x android/gradlew
+        # 確保 capacitor.config.json 存在
+        mkdir -p android/app/src/main/assets/public
+        cp index.html android/app/src/main/assets/public/
+        cp -r src android/app/src/main/assets/public/
+        echo "{\"appId\":\"com.costco.shiftmanager.v21\",\"appName\":\"Costco班表V21\",\"webDir\":\"public\"}" > android/app/src/main/assets/capacitor.config.json
     
     - name: Build Release APK
       working-directory: ./android
-      run: |
-        chmod +x gradlew
-        ./gradlew assembleRelease
+      run: ./gradlew assembleRelease
     
     - name: Upload APK
       uses: actions/upload-artifact@v4
