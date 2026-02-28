@@ -14,11 +14,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
     
     - name: Setup JDK
       uses: actions/setup-java@v4
@@ -26,27 +21,21 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
     
-    - name: Install dependencies
-      run: npm install
-    
-    - name: Sync Capacitor
-      run: npx cap sync android
-    
-    - name: Copy web assets
+    - name: Copy web assets to Android
       run: |
         mkdir -p android/app/src/main/assets/public/src/core
         cp index.html android/app/src/main/assets/public/
         cp src/core/*.js android/app/src/main/assets/public/src/core/
+        echo "✅ Web assets copied"
     
     - name: Build Release APK
       working-directory: ./android
       run: ./gradlew assembleRelease
     
-    - name: Sign APK (Debug)
+    - name: Check APK output
       working-directory: ./android
       run: |
-        # 使用 debug 金鑰簽署（僅供測試）
-        cp app/build/outputs/apk/release/app-release-unsigned.apk app/build/outputs/apk/release/app-release-signed.apk
+        ls -la app/build/outputs/apk/release/
     
     - name: Upload APK
       uses: actions/upload-artifact@v4
