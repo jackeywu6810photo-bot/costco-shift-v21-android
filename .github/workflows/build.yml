@@ -1,0 +1,40 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup JDK
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    
+    - name: Make gradlew executable
+      run: chmod +x ./android/gradlew
+    
+    - name: Copy web assets to Android
+      run: |
+        mkdir -p android/app/src/main/assets/public/src/core
+        cp index.html android/app/src/main/assets/public/
+        cp src/core/*.js android/app/src/main/assets/public/src/core/
+    
+    - name: Build Release APK
+      working-directory: ./android
+      run: ./gradlew assembleRelease
+    
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: CostcoShiftV21-APK
+        path: android/app/build/outputs/apk/release/*.apk
+        retention-days: 30
