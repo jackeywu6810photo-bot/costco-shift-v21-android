@@ -19,19 +19,24 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
     
-    - name: Prepare Android project
+    - name: Fix and Build
       run: |
+        # 進入 Android 目錄
+        cd android
+        
         # 確保 gradlew 可執行
-        chmod +x android/gradlew
-        # 確保 capacitor.config.json 存在
-        mkdir -p android/app/src/main/assets/public
-        cp index.html android/app/src/main/assets/public/
-        cp -r src android/app/src/main/assets/public/
-        echo "{\"appId\":\"com.costco.shiftmanager.v21\",\"appName\":\"Costco班表V21\",\"webDir\":\"public\"}" > android/app/src/main/assets/capacitor.config.json
-    
-    - name: Build Release APK
-      working-directory: ./android
-      run: ./gradlew assembleRelease
+        chmod +x gradlew
+        
+        # 更新 capacitor 配置為 Costco 班表
+        mkdir -p app/src/main/assets/public
+        echo '{"appId":"com.costco.shiftmanager.v21","appName":"Costco班表V21","webDir":"public","bundledWebRuntime":false}' > app/src/main/assets/capacitor.config.json
+        
+        # 複製 web 資源
+        cp ../index.html app/src/main/assets/public/
+        cp -r ../src app/src/main/assets/public/
+        
+        # 編譯
+        ./gradlew assembleRelease
     
     - name: Upload APK
       uses: actions/upload-artifact@v4
